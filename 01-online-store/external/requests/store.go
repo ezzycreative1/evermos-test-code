@@ -16,10 +16,14 @@ type CreateSupplierRequest struct {
 	Kota        string `json:"kota"`
 }
 
-type CreateSupplierRequest struct {
+type CreateProductRequest struct {
 	Name        string `json:"name"`
 	Email       string `json:"email"`
 	PhoneNumber string `json:"phone_number"`
 	Address     string `json:"address"`
 	Kota        string `json:"kota"`
+}
+
+type CreateCategoryequest struct {
+	Name string `json:"name"`
 }

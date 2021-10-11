@@ -1,8 +1,8 @@
-package product
+package category
 
 import (
 	BaseHandler "01-online-store/app/base/handler"
-	"01-online-store/app/product"
+	"01-online-store/app/category"
 	"01-online-store/models"
 	"math"
 	"strconv"
@@ -13,13 +13,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ProductHandler ..
-type ProductHandler struct {
-	UseCase product.IProductUsecase
+// CategoryHandler ..
+type CategoryHandler struct {
+	UseCase category.ICategoryUsecase
 }
 
-// GetAllProductHandler ..
-func (p *ProductHandler) GetAllProductHandler(c *gin.Context) {
+// GetAllCategoryHandler ..
+func (ct *CategoryHandler) GetAllCategoryHandler(c *gin.Context) {
 	queryPage := c.Query("page")
 	queryLimit := c.Query("limit")
 	limit := 10
@@ -35,7 +35,7 @@ func (p *ProductHandler) GetAllProductHandler(c *gin.Context) {
 		limit = i
 	}
 
-	count, listProduct, err := p.UseCase.GetProduct(c, page, limit)
+	count, listCat, err := ct.UseCase.GetCategory(c, page, limit)
 	if err != nil {
 		BaseHandler.FailedResponseBackend(c, err)
 		return
@@ -47,63 +47,62 @@ func (p *ProductHandler) GetAllProductHandler(c *gin.Context) {
 	pages.Count = int64(count)
 	pages.Page = int64(page)
 	type responsewithpage struct {
-		Product  *[]models.Product `json:"product"`
-		Paginate resp.Paginate     `json:"pagination"`
+		Cat      *[]models.Category `json:"category"`
+		Paginate resp.Paginate      `json:"pagination"`
 	}
 
 	res := responsewithpage{
-		Product:  listProduct,
+		Cat:      listCat,
 		Paginate: pages,
 	}
-	BaseHandler.RespondSuccess(c, "Success Get All Product", res)
+	BaseHandler.RespondSuccess(c, "Success Get All Customer", res)
 }
 
-// GetProductByIDHandler ..
-func (p *ProductHandler) GetProductByIDHandler(c *gin.Context) {
-	suppID := c.Param("id")
-	convSuppID, _ := strconv.ParseInt(suppID, 10, 64)
-	product, err := p.UseCase.GetProductByID(c, convSuppID)
+func (ct *CategoryHandler) GetCategoryByIDHandler(c *gin.Context) {
+	custID := c.Param("id")
+	convCustID, _ := strconv.ParseInt(custID, 10, 64)
+	cust, err := ch.UseCase.GetCustomerByID(c, convCustID)
 	if err != nil {
 		if err != nil {
 			BaseHandler.FailedResponseBackend(c, err)
 			return
 		}
 	}
-	BaseHandler.RespondSuccess(c, "success get product", product)
+	BaseHandler.RespondSuccess(c, "success get customer", cust)
 }
 
-// CreateProductHandler ..
-func (p *ProductHandler) CreateProductHandler(c *gin.Context) {
-	requestBody := requests.CreateProductRequest{}
+// CreateCustomerHandler ..
+func (ch *CustomerHandler) CreateCustomerHandler(c *gin.Context) {
+	requestBody := requests.CreateCustomerRequest{}
 	err := c.BindJSON(&requestBody)
 	if err != nil {
 		c.Error(err)
 		BaseHandler.FailedResponseBackend(c, err)
 		return
 	}
-	custID, err := p.UseCase.CreateProduct(c, requestBody)
+	custID, err := ch.UseCase.CreateCustomer(c, requestBody)
 	if err != nil {
 		BaseHandler.FailedResponseBackend(c, err)
 		return
 	}
 	// Success
-	BaseHandler.RespondSuccess(c, "create product success", custID)
+	BaseHandler.RespondSuccess(c, "create customer success", custID)
 }
 
 //EditCustomerHandler ..
-func (sh *SupplierHandler) EditSupplierHandler(c *gin.Context) {
-	requestBody := models.Supplier{}
+func (ch *CustomerHandler) EditCustomerHandler(c *gin.Context) {
+	requestBody := models.Customer{}
 	err := c.BindJSON(&requestBody)
 	if err != nil {
 		c.Error(err)
 		BaseHandler.FailedResponseBackend(c, err)
 		return
 	}
-	custID, err := sh.UseCase.EditSupplier(c, requestBody)
+	custID, err := ch.UseCase.EditCustomer(c, requestBody)
 	if err != nil {
 		BaseHandler.FailedResponseBackend(c, err)
 		return
 	}
 	// Success
-	BaseHandler.RespondSuccess(c, "edit supplier success", custID)
+	BaseHandler.RespondSuccess(c, "edit customer success", custID)
 }

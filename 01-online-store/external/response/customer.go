@@ -8,6 +8,10 @@ type SupplierResp struct {
 	SupplierCode int64 `json:"supplier_code"`
 }
 
+type CategoryResp struct {
+	CategoryCode int64 `json:"category_code"`
+}
+
 type Paginate struct {
 	Count     int64   `json:"count"`
 	TotalPage float64 `json:"totalpage"`
