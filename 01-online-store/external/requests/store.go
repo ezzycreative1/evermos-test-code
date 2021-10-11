@@ -24,6 +24,6 @@ type CreateProductRequest struct {
 	Kota        string `json:"kota"`
 }
 
-type CreateCategoryequest struct {
+type CreateCategoryRequest struct {
 	Name string `json:"name"`
 }

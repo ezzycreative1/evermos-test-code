@@ -1,58 +1,58 @@
 package repository
 
 import (
-	"01-online-store/app/customer"
+	"01-online-store/app/category"
 	"01-online-store/models"
 
 	"github.com/jinzhu/gorm"
 )
 
-type customerRepository struct {
+type categoryRepository struct {
 	Conn *gorm.DB
 }
 
-func NewCustomerRepository(Conn *gorm.DB) customer.Repository {
-	return &customerRepository{Conn}
+func NewCategoryRepository(Conn *gorm.DB) category.Repository {
+	return &categoryRepository{Conn}
 }
 
-func (ur *customerRepository) CountCust() (int64, error) {
-	query := ur.Conn
+func (cr *categoryRepository) CountCat() (int64, error) {
+	query := cr.Conn
 
 	var countdata int64
-	err := query.Model(&models.Customer{}).Count(&countdata).Error
+	err := query.Model(&models.Category{}).Count(&countdata).Error
 	return countdata, err
 }
 
-func (ur *customerRepository) GetAllCustomer(page int, limit int) (cust []models.Customer, err error) {
+func (cr *categoryRepository) GetAllCategory(page int, limit int) (cat []models.Category, err error) {
 	offset := (page - 1) * limit
-	query := ur.Conn.Model(&models.Customer{})
+	query := cr.Conn.Model(&models.Category{})
 
-	if err = query.Where("deleted_at is NULL").Order("created_at desc").Limit(limit).Offset(offset).Find(&cust).Error; err != nil {
+	if err = query.Where("deleted_at is NULL").Order("created_at desc").Limit(limit).Offset(offset).Find(&cat).Error; err != nil {
 		return nil, err
 	}
-	return cust, nil
+	return cat, nil
 }
 
-func (ur *customerRepository) GetCustomer() (cust []models.Customer, err error) {
-	return cust, ur.Conn.First(&cust).Error
+func (cr *categoryRepository) GetCategory() (cat []models.Category, err error) {
+	return cat, cr.Conn.First(&cat).Error
 }
 
-func (ur *customerRepository) GetCustomerByID(custID int64) (cust models.Customer, err error) {
-	return cust, ur.Conn.Where("id = ?", custID).First(&cust).Error
+func (cr *categoryRepository) GetCategoryByID(catID int64) (cat models.Category, err error) {
+	return cat, cr.Conn.Where("id = ?", catID).First(&cat).Error
 }
 
-func (ur *customerRepository) CreateCustomer(cust *models.Customer) (*int64, error) {
-	if err := ur.Conn.Create(&cust).Error; err != nil {
-		return nil, err
-	}
-
-	return &cust.ID, nil
-}
-
-func (ur *customerRepository) UpdateCustomer(cust *models.Customer) (*int64, error) {
-	if err := ur.Conn.Update(&cust).Error; err != nil {
+func (cr *categoryRepository) CreateCategory(cat *models.Category) (*int64, error) {
+	if err := cr.Conn.Create(&cat).Error; err != nil {
 		return nil, err
 	}
 
-	return &cust.ID, nil
+	return &cat.ID, nil
+}
+
+func (cr *categoryRepository) UpdateCategory(cat *models.Category) (*int64, error) {
+	if err := cr.Conn.Update(&cat).Error; err != nil {
+		return nil, err
+	}
+
+	return &cat.ID, nil
 }

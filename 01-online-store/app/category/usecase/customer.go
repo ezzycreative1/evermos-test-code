@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"01-online-store/app/customer"
+	"01-online-store/app/category"
 	"01-online-store/external/requests"
 	"01-online-store/external/response"
 	"01-online-store/models"
@@ -9,74 +9,64 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type customerUsecase struct {
-	repo customer.Repository
+type categoryUsecase struct {
+	repo category.Repository
 }
 
-func NewCustomerUsecase(repo customer.Repository) customer.ICustomerUsecase {
-	return &customerUsecase{
+func NewCategoryUsecase(repo category.Repository) category.ICategoryUsecase {
+	return &categoryUsecase{
 		repo: repo,
 	}
 }
 
-func (cu *customerUsecase) GetCustomer(c *gin.Context, page int, limit int) (int64, *[]models.Customer, error) {
-	count, err := cu.repo.CountCust()
+func (cu *categoryUsecase) GetCategory(c *gin.Context, page int, limit int) (int64, *[]models.Category, error) {
+	count, err := cu.repo.CountCat()
 	if err != nil {
 		return count, nil, err
 	}
-	listCust, err := cu.repo.GetAllCustomer(page, limit)
+	listCat, err := cu.repo.GetAllCategory(page, limit)
 	if err != nil {
 		return count, nil, err
 	}
-	return count, &listCust, nil
+	return count, &listCat, nil
 }
 
-func (cu *customerUsecase) GetCustomerByID(c *gin.Context, customerID int64) (*models.Customer, error) {
-	cust, err := cu.repo.GetCustomerByID(customerID)
+func (cu *categoryUsecase) GetCategoryByID(c *gin.Context, categoryID int64) (*models.Category, error) {
+	cat, err := cu.repo.GetCategoryByID(categoryID)
 	if err != nil {
 		return nil, err
 	}
-	return &cust, nil
+	return &cat, nil
 }
 
-func (cu *customerUsecase) CreateCustomer(c *gin.Context, req requests.CreateCustomerRequest) (*response.CustomerResp, error) {
-	custID, err := cu.repo.CreateCustomer(
-		&models.Customer{
-			Name:        req.Name,
-			Email:       req.Email,
-			PhoneNumber: req.PhoneNumber,
-			Address:     req.Address,
-			Kota:        req.Kota,
-			Status:      "active",
+func (cu *categoryUsecase) CreateCategory(c *gin.Context, req requests.CreateCategoryRequest) (*response.CategoryResp, error) {
+	catID, err := cu.repo.CreateCategory(
+		&models.Category{
+			Name: req.Name,
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	response := &response.CustomerResp{}
-	response.CustomerCode = *custID
+	response := &response.CategoryResp{}
+	response.CategoryCode = *catID
 
 	return response, nil
 }
 
-func (cu *customerUsecase) EditCustomer(c *gin.Context, req models.Customer) (*response.CustomerResp, error) {
-	custID, err := cu.repo.UpdateCustomer(
-		&models.Customer{
-			Name:        req.Name,
-			Email:       req.Email,
-			PhoneNumber: req.PhoneNumber,
-			Address:     req.Address,
-			Kota:        req.Kota,
-			Status:      req.Status,
+func (cu *categoryUsecase) EditCategory(c *gin.Context, req models.Category) (*response.CategoryResp, error) {
+	catID, err := cu.repo.UpdateCategory(
+		&models.Category{
+			Name: req.Name,
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	response := &response.CustomerResp{}
-	response.CustomerCode = *custID
+	response := &response.CategoryResp{}
+	response.CategoryCode = *catID
 
 	return response, nil
 }

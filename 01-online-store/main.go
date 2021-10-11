@@ -11,6 +11,9 @@ import (
 	SupplierRepo "01-online-store/app/supplier/repository"
 	SupplierUsecase "01-online-store/app/supplier/usecase"
 
+	CategoryRepo "01-online-store/app/category/repository"
+	CategoryUsecase "01-online-store/app/category/usecase"
+
 	"01-online-store/database"
 	"01-online-store/database/migration"
 	"01-online-store/database/seeder"
@@ -70,10 +73,15 @@ func main() {
 	supplierRepo := SupplierRepo.NewSupplierRepository(db)
 	supplierUsecase := SupplierUsecase.NewSupplierUsecase(supplierRepo)
 
+	// Category
+	categoryRepo := CategoryRepo.NewCategoryRepository(db)
+	categoryUsecase := CategoryUsecase.NewCategoryUsecase(categoryRepo)
+
 	// Health check
 	routes.HealthCheckHTTPHandler(router)
 	routes.CustomerHTTPHandler(router, customerUsecase)
 	routes.SupplierHTTPHandler(router, supplierUsecase)
+	routes.CategoryHTTPHandler(router, categoryUsecase)
 
 	// Server
 	if err := router.Run(fmt.Sprintf(":%s", os.Getenv("HTTP_PORT"))); err != nil {

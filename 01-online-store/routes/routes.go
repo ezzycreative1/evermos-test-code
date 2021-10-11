@@ -1,6 +1,8 @@
 package app
 
 import (
+	"01-online-store/app/category"
+	CHandler "01-online-store/app/category/handler"
 	"01-online-store/app/customer"
 	CSHandler "01-online-store/app/customer/handler"
 	HCHandler "01-online-store/app/healthcheck/handler"
@@ -30,4 +32,12 @@ func SupplierHTTPHandler(router *gin.Engine, usecase supplier.ISupplierUsecase) 
 	router.PUT("/supplier", handler.EditSupplierHandler)
 	router.GET("/supplier/:id", handler.GetSupplierByIDHandler)
 	router.GET("/supplier", handler.GetAllSupplierHandler)
+}
+
+func CategoryHTTPHandler(router *gin.Engine, usecase category.ICategoryUsecase) {
+	handler := &CHandler.CategoryHandler{UseCase: usecase}
+	router.POST("/category", handler.CreateCategoryHandler)
+	router.PUT("/category", handler.EditCategoryHandler)
+	router.GET("/category/:id", handler.GetCategoryByIDHandler)
+	router.GET("/category", handler.GetAllCategoryHandler)
 }

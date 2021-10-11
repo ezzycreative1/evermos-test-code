@@ -1,13 +1,13 @@
-package customer
+package category
 
 import (
 	"01-online-store/models"
 )
 
 type Repository interface {
-	CountCust() (int64, error)
-	GetAllCustomer(page int, limit int) (cust []models.Customer, err error)
-	GetCustomerByID(custID int64) (cust models.Customer, err error)
-	CreateCustomer(cust *models.Customer) (*int64, error)
-	UpdateCustomer(cust *models.Customer) (*int64, error)
+	CountCat() (int64, error)
+	GetAllCategory(page int, limit int) (cat []models.Category, err error)
+	GetCategoryByID(catID int64) (cat models.Category, err error)
+	CreateCategory(cat *models.Category) (*int64, error)
+	UpdateCategory(cat *models.Category) (*int64, error)
 }

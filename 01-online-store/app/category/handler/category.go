@@ -59,9 +59,9 @@ func (ct *CategoryHandler) GetAllCategoryHandler(c *gin.Context) {
 }
 
 func (ct *CategoryHandler) GetCategoryByIDHandler(c *gin.Context) {
-	custID := c.Param("id")
-	convCustID, _ := strconv.ParseInt(custID, 10, 64)
-	cust, err := ch.UseCase.GetCustomerByID(c, convCustID)
+	catID := c.Param("id")
+	convCatID, _ := strconv.ParseInt(catID, 10, 64)
+	cust, err := ct.UseCase.GetCategoryByID(c, convCatID)
 	if err != nil {
 		if err != nil {
 			BaseHandler.FailedResponseBackend(c, err)
@@ -71,38 +71,36 @@ func (ct *CategoryHandler) GetCategoryByIDHandler(c *gin.Context) {
 	BaseHandler.RespondSuccess(c, "success get customer", cust)
 }
 
-// CreateCustomerHandler ..
-func (ch *CustomerHandler) CreateCustomerHandler(c *gin.Context) {
-	requestBody := requests.CreateCustomerRequest{}
+func (ch *CategoryHandler) CreateCategoryHandler(c *gin.Context) {
+	requestBody := requests.CreateCategoryRequest{}
 	err := c.BindJSON(&requestBody)
 	if err != nil {
 		c.Error(err)
 		BaseHandler.FailedResponseBackend(c, err)
 		return
 	}
-	custID, err := ch.UseCase.CreateCustomer(c, requestBody)
+	catID, err := ch.UseCase.CreateCategory(c, requestBody)
 	if err != nil {
 		BaseHandler.FailedResponseBackend(c, err)
 		return
 	}
 	// Success
-	BaseHandler.RespondSuccess(c, "create customer success", custID)
+	BaseHandler.RespondSuccess(c, "create category success", catID)
 }
 
-//EditCustomerHandler ..
-func (ch *CustomerHandler) EditCustomerHandler(c *gin.Context) {
-	requestBody := models.Customer{}
+func (ch *CategoryHandler) EditCategoryHandler(c *gin.Context) {
+	requestBody := models.Category{}
 	err := c.BindJSON(&requestBody)
 	if err != nil {
 		c.Error(err)
 		BaseHandler.FailedResponseBackend(c, err)
 		return
 	}
-	custID, err := ch.UseCase.EditCustomer(c, requestBody)
+	catID, err := ch.UseCase.EditCategory(c, requestBody)
 	if err != nil {
 		BaseHandler.FailedResponseBackend(c, err)
 		return
 	}
 	// Success
-	BaseHandler.RespondSuccess(c, "edit customer success", custID)
+	BaseHandler.RespondSuccess(c, "edit category success", catID)
 }
