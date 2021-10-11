@@ -1,9 +1,15 @@
 package response
 
-type SDPAccessTokenResp struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-	ApiDomain    string `json:"api_domain"`
-	TokenType    string `json:"token_type"`
-	ExpiresIn    int    `json:"expires_in"`
+type CustomerResp struct {
+	CustomerCode int64 `json:"customer_code"`
+}
+
+type SupplierResp struct {
+	SupplierCode int64 `json:"supplier_code"`
+}
+
+type Paginate struct {
+	Count     int64   `json:"count"`
+	TotalPage float64 `json:"totalpage"`
+	Page      int64   `json:"page"`
 }

@@ -5,12 +5,21 @@ import (
 	"log"
 	"os"
 
+	CustomerRepo "01-online-store/app/customer/repository"
+	CustomerUsecase "01-online-store/app/customer/usecase"
+
+	SupplierRepo "01-online-store/app/supplier/repository"
+	SupplierUsecase "01-online-store/app/supplier/usecase"
+
+	"01-online-store/database"
 	"01-online-store/database/migration"
+	"01-online-store/database/seeder"
 	routes "01-online-store/routes"
 
 	//"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -19,11 +28,11 @@ var (
 
 func main() {
 
-	// err = godotenv.Load()
-	// db := database.PostsqlConn()
-	// if err != nil {
-	// 	log.Fatalf("Error getting env, %v", err)
-	// }
+	err = godotenv.Load()
+	db := database.PostsqlConn()
+	if err != nil {
+		log.Fatalf("Error getting env, %v", err)
+	}
 	dbEvent := os.Getenv("DBEVENT")
 	if dbEvent == "rollback_migrate" || dbEvent == "rollback" {
 		migration.RunRollback()
@@ -34,7 +43,7 @@ func main() {
 	if dbEvent == "migrate" || dbEvent == "rollback_migrate" {
 		migration.RunMigration()
 		// Type Seeders
-		//seeder.StatusTicketSeeder()
+		seeder.CategorySeeder()
 	}
 
 	router := gin.New()
@@ -53,10 +62,18 @@ func main() {
 	// Middleware Token
 	//router.Use(middle.AuthMiddleware())
 
+	// Customer
+	customerRepo := CustomerRepo.NewCustomerRepository(db)
+	customerUsecase := CustomerUsecase.NewCustomerUsecase(customerRepo)
+
+	// Supplier
+	supplierRepo := SupplierRepo.NewSupplierRepository(db)
+	supplierUsecase := SupplierUsecase.NewSupplierUsecase(supplierRepo)
+
 	// Health check
 	routes.HealthCheckHTTPHandler(router)
-	// User
-	//routes.NewUserHandler(router, userUsecase)
+	routes.CustomerHTTPHandler(router, customerUsecase)
+	routes.SupplierHTTPHandler(router, supplierUsecase)
 
 	// Server
 	if err := router.Run(fmt.Sprintf(":%s", os.Getenv("HTTP_PORT"))); err != nil {
